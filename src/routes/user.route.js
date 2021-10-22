@@ -5,10 +5,6 @@ const database = require('../database/index');
 
 const route = express.Router();
 
-route.get('/user', (request, response) => {
-  return response.status(201).json(database);
-});
-
 route.post('/user', (request, response) => {
   const { name, cpf, email, date } = request.body;
 
@@ -25,6 +21,18 @@ route.post('/user', (request, response) => {
   database.push(user);
 
   return response.status(201).json(user)
+});
+
+route.get('/user/:id', (request, response) => {
+  const id = request.params.id
+
+  const user = database.find(user => user.id == id)
+
+  if (!user) {
+    return response.status(401).json({error: 'User not found!'})
+  }
+
+  return response.status(201).json(user);
 });
 
 module.exports = route;
