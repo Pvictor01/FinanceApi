@@ -1,5 +1,5 @@
 const express = require('express');
-const { v4: uuidv4 } = require('uuid')
+const { v4: uuidv4 } = require('uuid');
 
 const database = require('../database/index');
 
@@ -16,23 +16,43 @@ route.post('/user', (request, response) => {
     date,
     created_at: new Date(),
     updated_at: new Date(),
-  }
+  };
 
   database.push(user);
 
-  return response.status(201).json(user)
+  return response.status(201).json(database);
 });
 
 route.get('/user/:id', (request, response) => {
-  const id = request.params.id
+  const id = request.params.id;
 
-  const user = database.find(user => user.id == id)
+  const user = database.find(user => user.id == id);
 
   if (!user) {
     return response.status(401).json({error: 'User not found!'})
-  }
+  };
 
   return response.status(201).json(user);
+});
+
+route.put('/user/:id', (request, response) => {
+  const { id } = request.params;
+  const { name, cpf, email, date} = request.body;
+
+  const index = database.findIndex(user => user.id === id);
+
+  if(index < 0) {
+    return response.status(401).json({error: 'User not found!'});
+  };
+
+  const user = database[index];
+
+  user.name = name;
+  user.cpf = cpf;
+  user.email = email;
+  user.date = date;
+  
+  return response.status(201).json(user)
 });
 
 module.exports = route;
