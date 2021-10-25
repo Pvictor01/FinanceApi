@@ -32,7 +32,7 @@ route.get('/user/:id', (request, response) => {
     return response.status(401).json({error: 'User not found!'})
   };
 
-  return response.status(201).json(user);
+  return response.status(201).json(database);
 });
 
 route.put('/user/:id', (request, response) => {
@@ -54,5 +54,19 @@ route.put('/user/:id', (request, response) => {
   
   return response.status(201).json(user)
 });
+
+route.delete('/user/:id', (request, response) => {
+  const { id } = request.params;
+
+  const index = database.findIndex(user => user.id === id)
+
+  if(index < 0) {
+    return response.status(401).json({error: 'User not found!'})
+  }
+
+  database.splice(index, 1)
+
+  return response.status(200).json({message: 'User deleted!'})
+})
 
 module.exports = route;
